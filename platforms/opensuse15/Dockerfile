@@ -5,7 +5,7 @@ ENV container=docker
 
 # update registry and install required packages
 RUN zypper up -y \
-    && RUN zypper install -y dbus-1 systemd-sysvinit sudo python3 python3-pip python3-setuptools python3-wheel \
+    && zypper install -y dbus-1 systemd-sysvinit sudo python3 python3-pip python3-setuptools python3-wheel \
     && zypper clean
 
 # enable systemd
