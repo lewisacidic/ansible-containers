@@ -7,9 +7,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 # update registry install required packages
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-      sudo systemd systemd-sysv ca-certificates iproute2 \
-      python3 python3-pip python3-wheel python3-apt \
+      sudo systemd systemd-sysv build-essential wget \
+      libffi-dev libssl-dev procps ca-certificates iproute2 \
+      python3-dev python3-pip python3-setuptools python3-wheel python3-apt \
   && rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/* \
+  && rm -Rf /usr/share/doc /usr/share/man \
   && apt-get clean
 
 # enable systemd
