@@ -3,9 +3,9 @@ LABEL maintainer="Rich Lewis <opensource@rpil.io>"
 
 ENV container=docker
 
-# update registry and install requiredd packages
+# update registry and install required packages
 RUN pacman --noconfirm -Syyu; \
-    pacman --noconfirm -S ansible which sudo; \
+    pacman --noconfirm -S python python-pip python-wheel which sudo; \
     rm /var/cache/pacman/pkg/*
 
 # enable systemd
