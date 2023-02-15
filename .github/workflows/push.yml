@@ -16,10 +16,14 @@ jobs:
   prepare-matrix:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: List platforms
         id: list-platforms
         run: |
-          echo "platforms=" >> $GITHUB_OUTPUT
+          echo -n "platforms=" >> $GITHUB_OUTPUT
           ls platforms | jq -srR 'split("\n") | map(select(. != "")) | @json' >> $GITHUB_OUTPUT
     outputs:
       platforms: ${{ steps.list-platforms.outputs.platforms }}
