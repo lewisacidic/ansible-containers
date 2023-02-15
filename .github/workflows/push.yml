@@ -13,16 +13,24 @@ env:
   registry: ghcr.io
 
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List platforms
+        id: list-platforms
+        run: |
+          echo "platforms=" >> $GITHUB_OUTPUT
+          ls platforms | jq -srR 'split("\n") | map(select(. != "")) | @json' >> $GITHUB_OUTPUT
+    outputs:
+      platforms: ${{ steps.list-platforms.outputs.platforms }}
   build-push:
     runs-on: ubuntu-latest
+    needs: prepare-matrix
     permissions:
       contents: read
       packages: write
     strategy:
-      matrix:
-        platform:
-          - debian11
-          - opensuse15
+      matrix: ${{ fromJSON(needs.prepare-matrix.outputs.platforms) }}
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
