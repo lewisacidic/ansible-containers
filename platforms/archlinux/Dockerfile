@@ -1,17 +1,27 @@
 FROM docker.io/archlinux:latest
 LABEL maintainer="Rich Lewis <opensource@rpil.io>"
 
+ENV container=docker
+
+# update registry and install requiredd packages
 RUN pacman --noconfirm -Syyu; \
-    (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+    pacman --noconfirm -S ansible which sudo; \
+    rm /var/cache/pacman/pkg/*
+
+# enable systemd
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
     rm -f /lib/systemd/system/multi-user.target.wants/*;\
     rm -f /etc/systemd/system/*.wants/*;\
     rm -f /lib/systemd/system/local-fs.target.wants/*; \
     rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
     rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-    rm -f /lib/systemd/system/basic.target.wants/*; \
-    pacman --noconfirm -S ansible which sudo; \
-    rm /var/cache/pacman/pkg/*
+    rm -f /lib/systemd/system/basic.target.wants/*;
 
+# update pip and install ansible
+RUN pip3 install --no-cache-dir --upgrade pip \
+    && pip3 install --no-cache-dir ansible cryptography
+
+# install ansible inventory file
 RUN mkdir -p /etc/ansible \
     && echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
 
