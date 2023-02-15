@@ -31,4 +31,6 @@ jobs:
         with:
           push: true
           tags: ${{ env.registry }}/${{ github.repository }}/${{ env.platform }}:latest
+          cache-to: type=gha
+          cache-from: type=gha
 
