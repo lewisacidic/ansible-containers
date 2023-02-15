@@ -11,7 +11,6 @@ on:
 
 env:
   registry: ghcr.io
-  platform: debian11
 
 jobs:
   build-push:
@@ -19,6 +18,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        platform:
+          - debian11
+          - opensuse15
     steps:
       - name: Log into registry
         uses: docker/login-action@v2
@@ -30,8 +34,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          context: "{{ defaultContext }}:platforms/${{ env.platform }}"
-          tags: ${{ env.registry }}/${{ github.repository }}/${{ env.platform }}:latest
-          cache-to: type=gha,scope=$GITHUB_REF_NAME-${{ env.platform }}
-          cache-from: type=gha,scope=$GITHUB_REF_NAME-${{ env.platform }}
+          context: "{{ defaultContext }}:platforms/${{ matrix.platform }}"
+          tags: ${{ env.registry }}/${{ github.repository }}/${{ matrix.platform }}:latest
+          cache-to: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
+          cache-from: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
 
