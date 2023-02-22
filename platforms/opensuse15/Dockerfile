@@ -4,10 +4,6 @@ LABEL maintainer "Rich Lewis <opensource@rpil.io>"
 ENV ANSIBLE_USER=ansible
 ENV container=docker
 #
-# Create ansible user
-RUN useradd -lm ${ANSIBLE_USER} \
-  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
 # update registry and install required packages
 RUN zypper up -y \
     && zypper install -y dbus-1 systemd-sysvinit sudo python3 python3-pip python3-setuptools python3-wheel \
@@ -16,6 +12,10 @@ RUN zypper up -y \
 # enable systemd
 RUN cp /usr/lib/systemd/system/dbus.service /etc/systemd/system/; \
     sed -i 's/OOMScoreAdjust=-900//' /etc/systemd/system/dbus.service
+
+# Create ansible user
+RUN useradd -lm ${ANSIBLE_USER} \
+  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # update pip and install ansible
 RUN pip3 install --no-cache-dir --upgrade pip \

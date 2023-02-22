@@ -4,10 +4,6 @@ LABEL maintainer="Rich Lewis <opensource@rpil.io>"
 ENV ANSIBLE_USER=ansible
 ENV container=docker
 
-# Create ansible user
-RUN useradd -lm ${ANSIBLE_USER} \
-  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
 # update registry and install required packages 
 RUN dnf -y update \
     && dnf makecache \
@@ -24,6 +20,10 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
     rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
     rm -f /lib/systemd/system/basic.target.wants/*;\
     rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+# Create ansible user
+RUN useradd -lm ${ANSIBLE_USER} \
+  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # update pip and install ansible
 RUN pip3 install --no-cache-dir --upgrade pip \

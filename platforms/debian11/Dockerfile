@@ -6,10 +6,6 @@ ENV container=docker
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Create ansible user
-RUN useradd -lm ${ANSIBLE_USER} \
-  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
 # update registry install required packages
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
@@ -29,6 +25,10 @@ RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
   /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
   /lib/systemd/system/systemd-update-utmp* \
   && systemctl set-default multi-user.target
+
+# Create ansible user
+RUN useradd -lm ${ANSIBLE_USER} \
+  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # update pip and install ansible
 RUN pip3 install --upgrade --no-cache-dir pip \

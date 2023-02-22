@@ -1,6 +1,7 @@
 FROM docker.io/archlinux:latest
 LABEL maintainer="Rich Lewis <opensource@rpil.io>"
 
+ENV ANSIBLE_USER=ansible
 ENV container=docker
 
 # update registry and install required packages
@@ -17,6 +18,10 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
     rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
     rm -f /lib/systemd/system/basic.target.wants/*;
 
+# Create ansible user
+RUN useradd -lm ${ANSIBLE_USER} &&
+  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL >> /etc/sudoers
+
 # update pip and install ansible
 RUN pip3 install --no-cache-dir --upgrade pip \
     && pip3 install --no-cache-dir ansible cryptography
@@ -24,10 +29,6 @@ RUN pip3 install --no-cache-dir --upgrade pip \
 # install ansible inventory file
 RUN mkdir -p /etc/ansible \
     && echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
-
-# Create ansible user
-RUN useradd -lm ${ANSIBLE_USER} &&
-  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL >> /etc/sudoers
 
 VOLUME ["/sys/fs/cgroup"]
 CMD ["/usr/lib/systemd/systemd"]
