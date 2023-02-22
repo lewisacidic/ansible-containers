@@ -1,8 +1,14 @@
 FROM debian:bullseye
 LABEL maintainer="Rich Lewis <opensource@rpil.io>"
 
+ENV ANSIBLE_USER=ansible
 ENV container=docker
+
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Create ansible user
+RUN useradd -lm ${ANSIBLE_USER} \
+  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # update registry install required packages
 RUN apt-get update \

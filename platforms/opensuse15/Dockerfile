@@ -1,7 +1,12 @@
 FROM opensuse/leap:15.4
 LABEL maintainer "Rich Lewis <opensource@rpil.io>"
 
+ENV ANSIBLE_USER=ansible
 ENV container=docker
+#
+# Create ansible user
+RUN useradd -lm ${ANSIBLE_USER} \
+  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # update registry and install required packages
 RUN zypper up -y \

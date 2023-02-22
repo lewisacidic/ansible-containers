@@ -25,5 +25,9 @@ RUN pip3 install --no-cache-dir --upgrade pip \
 RUN mkdir -p /etc/ansible \
     && echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
 
+# Create ansible user
+RUN useradd -lm ${ANSIBLE_USER} &&
+  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL >> /etc/sudoers
+
 VOLUME ["/sys/fs/cgroup"]
 CMD ["/usr/lib/systemd/systemd"]
