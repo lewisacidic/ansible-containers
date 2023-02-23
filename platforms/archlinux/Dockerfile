@@ -6,17 +6,22 @@ ENV container=docker
 
 # update registry and install required packages
 RUN pacman --noconfirm -Syyu \
-  && pacman --noconfirm -S python python-pip python-wheel which sudo \
+  && pacman --noconfirm -S \
+    python \
+    python-pip \
+    python-wheel \
+    which \
+    sudo \
   && rm /var/cache/pacman/pkg/*
 
 # enable systemd
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
   && rm -f /lib/systemd/system/multi-user.target.wants/* \
-  && rm -f /etc/systemd/system/*.wants/* \
-  && rm -f /lib/systemd/system/local-fs.target.wants/* \
-  && rm -f /lib/systemd/system/sockets.target.wants/*udev* \
-  && rm -f /lib/systemd/system/sockets.target.wants/*initctl* \
-  && rm -f /lib/systemd/system/basic.target.wants/*
+           /etc/systemd/system/*.wants/* \
+           /lib/systemd/system/local-fs.target.wants/* \
+           /lib/systemd/system/sockets.target.wants/*udev* \
+           /lib/systemd/system/sockets.target.wants/*initctl* \
+           /lib/systemd/system/basic.target.wants/*
 
 # Create ansible user
 RUN useradd -lm ${ANSIBLE_USER} && \

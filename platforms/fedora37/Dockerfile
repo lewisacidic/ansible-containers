@@ -6,10 +6,19 @@ ENV container=docker
 
 # update registry and install required packages 
 RUN dnf -y update \
-    && dnf makecache \
-    && dnf -y install systemd python3-pip sudo which python3-dnf ca-certificates iproute util-linux\
-    && dnf clean all \
-    && rm -rf /var/tmp/* /tmp/*
+  && dnf makecache \
+  && dnf -y install \
+       util-linux\
+       sudo \
+       which \
+       ca-certificates \
+       iproute \
+       systemd \
+       python3 \
+       python3-pip \
+       python3-dnf \
+  && dnf clean all \
+  && rm -rf /var/tmp/* /tmp/*
 
 # enable systemd
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
