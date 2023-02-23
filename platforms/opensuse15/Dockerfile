@@ -31,7 +31,7 @@ RUN cp /usr/lib/systemd/system/dbus.service /etc/systemd/system/ \
 
 # Create ansible user
 RUN useradd -lm ${ANSIBLE_USER} \
-  && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+  && echo -e "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # update pip and install ansible
 RUN pip3 install --no-cache-dir --upgrade pip \
