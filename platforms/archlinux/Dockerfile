@@ -12,16 +12,17 @@ RUN pacman --noconfirm -Syyu \
     python-wheel \
     which \
     sudo \
-  && rm /var/cache/pacman/pkg/*
+  && rm -rf /var/cache/pacman/pkg/* /var/tmp/* /tmp/*
 
-# enable systemd
-RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
-  && rm -f /lib/systemd/system/multi-user.target.wants/* \
-           /etc/systemd/system/*.wants/* \
-           /lib/systemd/system/local-fs.target.wants/* \
-           /lib/systemd/system/sockets.target.wants/*udev* \
-           /lib/systemd/system/sockets.target.wants/*initctl* \
-           /lib/systemd/system/basic.target.wants/*
+# delete some systemd unit files that might cause issues and configure systemd
+RUN rm -f /lib/systemd/system/{anaconda,basic,multi-user}.target.wants/* \
+    /etc/systemd/system/*.wants/* \
+    /lib/systemd/system/local-fs.target.wants/* \
+    /lib/systemd/system/sockets.target.wants/*udev* \
+    /lib/systemd/system/sockets.target.wants/*initctl* \
+    /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
+    /lib/systemd/system/systemd-update-utmp* \
+  && systemctl set-default multi-user.target
 
 # Create ansible user
 RUN useradd -lm ${ANSIBLE_USER} && \

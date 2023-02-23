@@ -16,7 +16,16 @@ RUN zypper up -y \
     python3-wheel \
   && zypper clean
 
-# enable systemd
+# delete some systemd unit files that might cause issues and configure systemd
+RUN rm -f /lib/systemd/system/{anaconda,basic,multi-user}.target.wants/* \
+    /etc/systemd/system/*.wants/* \
+    /lib/systemd/system/local-fs.target.wants/* \
+    /lib/systemd/system/sockets.target.wants/*udev* \
+    /lib/systemd/system/sockets.target.wants/*initctl* \
+    /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
+    /lib/systemd/system/systemd-update-utmp* \
+  && systemctl set-default multi-user.target
+
 RUN cp /usr/lib/systemd/system/dbus.service /etc/systemd/system/ \
   && sed -i 's/OOMScoreAdjust=-900//' /etc/systemd/system/dbus.service
 
