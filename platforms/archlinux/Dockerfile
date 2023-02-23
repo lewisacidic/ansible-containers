@@ -25,7 +25,7 @@ RUN rm -f /lib/systemd/system/{anaconda,basic,multi-user}.target.wants/* \
   && systemctl set-default multi-user.target
 
 # Create ansible user
-RUN useradd -lm ${ANSIBLE_USER} && \
+RUN useradd -lm ${ANSIBLE_USER} \
   && echo "%${ANSIBLE_USER} ALL=(ALL) NOPASSWD: ALL >> /etc/sudoers
 
 # update pip and install ansible
@@ -34,7 +34,7 @@ RUN pip3 install --no-cache-dir --upgrade pip \
 
 # install ansible inventory file
 RUN mkdir -p /etc/ansible \
-    && echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
+  && echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
 
 VOLUME ["/sys/fs/cgroup"]
 CMD ["/usr/lib/systemd/systemd"]
