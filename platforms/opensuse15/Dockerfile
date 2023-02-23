@@ -41,5 +41,5 @@ RUN pip3 install --no-cache-dir --upgrade pip \
 RUN mkdir -p /etc/ansible \
   && echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 
-VOLUME ["/sys/fs/cgroup"]
+VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 CMD ["/usr/lib/systemd/systemd"]
