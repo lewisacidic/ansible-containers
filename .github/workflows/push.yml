@@ -11,7 +11,7 @@ on:
 
 env:
   registry: ghcr.io
-  package: ansible
+  package: ${{ github.repository}}/ansible
 
 jobs:
   prepare-matrix:
