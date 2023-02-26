@@ -42,17 +42,26 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Log into registry
+        if: github.event_name != "pull_request"
         uses: docker/login-action@v2
         with:
           registry: ${{ env.registry }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add container metadata
+        id: metadata
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.registry }}/${{ env.package }}
+          tags: ${{ matrix.platform }}
       - name: Build and push image
         uses: docker/build-push-action@v4
         with:
-          push: true
+          push: ${{ github.event_name != "pull_request" }}
           context: "{{ defaultContext }}:platforms/${{ matrix.platform }}"
-          tags: ${{ env.registry }}/${{ env.package }}:${{ matrix.platform }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outpus.tags }}
           cache-to: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
           cache-from: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
 
