@@ -48,7 +48,6 @@ jobs:
           registry: ${{ env.registry }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Add container metadata
         id: metadata
         uses: docker/metadata-action@v4
@@ -61,7 +60,7 @@ jobs:
           context: "{{ defaultContext }}:platforms/${{ matrix.platform }}"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
           cache-to: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
           cache-from: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
 
