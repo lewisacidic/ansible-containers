@@ -11,6 +11,7 @@ on:
 
 env:
   registry: ghcr.io
+  package: ansible
 
 jobs:
   prepare-matrix:
@@ -51,7 +52,7 @@ jobs:
         with:
           push: true
           context: "{{ defaultContext }}:platforms/${{ matrix.platform }}"
-          tags: ${{ env.registry }}/${{ github.repository }}/${{ matrix.platform }}:latest
+          tags: ${{ env.registry }}/${{ env.package }}:${{ matrix.platform }}
           cache-to: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
           cache-from: type=gha,scope=$GITHUB_REF_NAME-${{ matrix.platform }}
 
